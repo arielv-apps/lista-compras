@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1f7a56"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Mi Lista"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mi Lista</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f1ea;--card:#fff;--ink:#1d2a24;--mut:#7a857f;--acc:#1f7a56;--acc2:#e9f4ee;--line:#e6e2d8;--warn:#e0693a}
+:root[data-theme="light"]{}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101613;--card:#18211c;--ink:#e8efe9;--mut:#8a978f;--acc:#3ecf8e;--acc2:#1b2e25;--line:#26332b}}
+:root[data-theme="dark"]{--bg:#101613;--card:#18211c;--ink:#e8efe9;--mut:#8a978f;--acc:#3ecf8e;--acc2:#1b2e25;--line:#26332b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;max-width:560px;margin:auto;padding-bottom:90px}
+header{padding:22px 20px 8px}
+h1{margin:0;font:700 28px/1.1 Georgia,serif;letter-spacing:-.5px}
+.sub{color:var(--mut);font-size:13px;margin-top:4px}
+.hero{margin:12px 16px;padding:18px;border-radius:22px;background:linear-gradient(135deg,var(--acc),#0f4d36);color:#fff;display:flex;justify-content:space-between;align-items:center}
+.hero b{font-size:30px;display:block}.hero small{opacity:.8}
+.wa{background:#25d366;color:#06361a;border:0;border-radius:14px;padding:10px 14px;font-weight:700}
+.search{margin:8px 16px}
+input,select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;width:100%}
+.cat{margin:16px 20px 6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.row{display:flex;align-items:center;gap:10px;margin:6px 16px;padding:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:16px}
+.row .n{flex:1;min-width:0}.row .n span{display:block;font-size:12px;color:var(--mut)}
+.chk{width:28px;height:28px;border-radius:50%;border:2px solid var(--acc);background:none;color:#fff;flex:none;font-size:16px}
+.chk:active{background:var(--acc)}
+.mini{width:62px;padding:8px;text-align:center;border-radius:10px}
+.u{width:74px;padding:8px;border-radius:10px}
+.ico{border:0;background:none;font-size:22px;padding:4px}
+.add{border:0;background:var(--acc2);color:var(--acc);border-radius:12px;padding:8px 12px;font-weight:700}
+.add.on{background:var(--acc);color:#fff}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;display:flex;background:var(--card);border-top:1px solid var(--line);padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;border:0;background:none;color:var(--mut);font:600 12px inherit;padding:6px}
+nav button.on{color:var(--acc)}nav i{display:block;font-style:normal;font-size:22px}
+.cathead{display:flex;align-items:center;gap:10px;width:calc(100% - 32px);margin:8px 16px;padding:13px 14px;background:var(--card);border:1px solid var(--line);border-radius:14px;font:700 15px system-ui,sans-serif;color:var(--ink);letter-spacing:0;text-transform:none;text-align:left}
+.cathead .cnt{margin-left:auto;color:var(--mut);font-weight:600;font-size:13px}
+.cathead .chev{color:var(--mut);transition:transform .2s;transform:rotate(-90deg)}
+.cathead.open .chev{transform:none}
+.tools{display:flex;gap:8px;margin:4px 16px}
+.row.lst{flex-wrap:wrap}
+.step{display:flex;align-items:center;flex-wrap:wrap;gap:6px;width:100%}
+.sb{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--acc2);color:var(--acc);font-size:22px;font-weight:700;line-height:1;padding:0}
+.del{margin-left:auto}
+.sb:active{background:var(--acc);color:#fff}
+.step .mini{width:70px}
+.ta{width:100%;font:inherit;font-size:13px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 16px 8px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 14px;font:600 14px system-ui,sans-serif}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}.chip b{margin-left:6px;background:rgba(0,0,0,.18);border-radius:10px;padding:1px 7px;font-size:12px}
+.mv{width:58px;padding:8px 4px;border-radius:10px}
+.empty{text-align:center;color:var(--mut);padding:40px 20px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:14px;display:none;z-index:9}
+.sub.ok{color:var(--acc)}
+.sub.warn{display:inline-block;color:#fff;background:var(--warn);padding:5px 11px;border-radius:10px;font-weight:600;line-height:1.3}
+</style></head><body>
+<header><h1>Mi Lista 🛒</h1><div class="sub" id="sync">Cargando…</div></header>
+<main id="app"></main>
+<div class="toast" id="toast"></div>
+<nav id="nav"></nav>
+<script>
+/* ===== DATA: catálogo curado (categoría → productos) ===== */
+const CATS={almacen:['🥫','Almacén'],verduleria:['🥬','Verdulería'],carniceria:['🥩','Carnicería'],lacteos:['🧀','Lácteos y fiambres'],panaderia:['🥖','Panadería'],bebidas:['🥤','Bebidas'],limpieza:['🧽','Limpieza'],perfumeria:['🧴','Perfumería'],congelados:['🧊','Congelados'],mascotas:['🐾','Mascotas'],sintacc:['🌾','Sin TACC'],educacion:['🎒','Educación']};
+const SEED={
+almacen:'Arroz,Fideos,Harina 000,Azúcar,Sal fina,Aceite de girasol,Aceite de oliva,Yerba mate,Café,Té,Galletitas,Puré de tomate,Tomate en lata,Lentejas,Polenta,Mayonesa,Mermelada,Dulce de leche,Atún en lata,Avena,Arroz integral,Arroz largo fino,Fideos tirabuzón,Fideos moñito,Fideos spaghetti,Fideos tallarín,Fideos para sopa,Ravioles,Ñoquis,Harina 0000,Harina leudante,Harina integral,Almidón de maíz,Azúcar impalpable,Edulcorante,Sal gruesa,Pimienta,Pimentón,Orégano,Comino,Ají molido,Provenzal,Laurel,Nuez moscada,Canela,Esencia de vainilla,Polvo de hornear,Levadura,Bicarbonato,Vinagre,Aceto balsámico,Aceite de maíz,Aceite en aerosol,Salsa de tomate,Tomate triturado,Salsa fileto,Ketchup,Mostaza,Salsa golf,Salsa de soja,Chimichurri,Aderezo,Caldo en cubos,Sopa instantánea,Choclo en lata,Arvejas en lata,Lentejas en lata,Garbanzos,Porotos,Porotos en lata,Palmitos,Duraznos en lata,Aceitunas verdes,Aceitunas negras,Pickles,Atún al natural,Caballa en lata,Sardinas,Mate cocido,Té en saquitos,Café instantáneo,Cacao en polvo,Chocolate para taza,Cereales,Granola,Copos de maíz,Barras de cereal,Galletitas dulces,Galletitas de agua,Galletitas saladas,Bizcochos,Alfajores,Chocolate,Caramelos,Chicles,Snacks,Papas fritas,Maní,Frutos secos,Pasas de uva,Semillas de chía,Miel,Mermelada de durazno,Mermelada de frutilla,Pochoclo,Postre en polvo,Gelatina,Flan en polvo,Premezcla para torta',
+verduleria:'Tomate,Cebolla,Papa,Batata,Zanahoria,Lechuga,Zapallo,Zapallito,Morrón,Ajo,Limón,Banana,Manzana,Naranja,Pera,Frutilla,Palta,Pepino,Choclo,Perejil,Tomate cherry,Tomate perita,Papa negra,Cebolla de verdeo,Cebolla morada,Puerro,Apio,Remolacha,Rabanito,Brócoli,Coliflor,Repollo,Repollo colorado,Espinaca,Acelga,Rúcula,Berenjena,Zapallo anco,Zapallo plomo,Chauchas,Arvejas frescas,Champiñones,Jengibre,Cilantro,Albahaca,Menta,Ciboulette,Romero,Tomillo,Mandarina,Pomelo,Uva,Durazno,Ciruela,Damasco,Cereza,Sandía,Melón,Ananá,Kiwi,Arándanos,Mango,Higos,Lima,Mandioca,Ensalada mixta,Hojas verdes,Mix de verdeo',
+carniceria:'Asado,Bife de chorizo,Carne picada,Milanesas,Pollo entero,Pechuga,Muslos de pollo,Chorizo,Matambre,Vacío,Costeleta de cerdo,Hamburguesas,Salchichas,Pescado,Nalga,Cuadril,Peceto,Bola de lomo,Paleta,Osobuco,Roast beef,Colita de cuadril,Tapa de asado,Entraña,Lomo,Tira de asado,Falda,Costillar,Picanha,Molleja,Chinchulines,Riñón,Morcilla,Provoleta,Hígado,Milanesas de pollo,Milanesas de soja,Suprema,Alitas de pollo,Pata muslo,Pollo trozado,Pechuga de pavo,Bondiola,Lomo de cerdo,Carré de cerdo,Panceta,Merluza,Filet de merluza,Salmón,Camarones,Calamares,Atún fresco,Hamburguesas de pollo,Albóndigas',
+lacteos:'Leche,Manteca,Queso cremoso,Queso rallado,Queso de rallar,Yogur,Crema de leche,Huevos,Jamón cocido,Salame,Ricota,Queso en fetas,Leche descremada,Leche en polvo,Leche de almendras,Leche de soja,Leche chocolatada,Leche condensada,Yogur firme,Yogur bebible,Yogur griego,Postre de leche,Flan,Queso crema,Queso port salut,Queso mozzarella,Queso sardo,Queso azul,Queso provolone,Queso pategrás,Queso de cabra,Queso en hebras,Queso untable,Margarina,Crema chantilly,Huevos de campo,Paleta cocida,Jamón crudo,Mortadela,Salchichón,Longaniza,Panceta ahumada,Pavita,Lomito',
+panaderia:'Pan francés,Pan de molde,Facturas,Tapas de empanadas,Prepizzas,Pan rallado,Tostadas,Pan lactal,Pan integral,Pan de hamburguesa,Pan de pancho,Pan árabe,Pan de campo,Medialunas,Bizcochitos,Criollitos,Grisines,Tortillas,Tapas de tarta,Tapas de pascualina,Masa de pizza,Pizzetas,Bizcochuelo,Budín,Torta,Scones,Pan dulce,Churros',
+bebidas:'Agua mineral,Gaseosa,Soda,Cerveza,Vino tinto,Jugo,Agua saborizada,Fernet,Agua con gas,Agua sin gas,Gaseosa light,Gaseosa cola,Gaseosa lima limón,Gaseosa naranja,Jugo en polvo,Jugo de naranja,Jugo en caja,Agua tónica,Cerveza rubia,Cerveza negra,Cerveza sin alcohol,Vino blanco,Vino rosado,Malbec,Espumante,Champagne,Sidra,Whisky,Vodka,Gin,Ron,Aperitivo,Hielo,Energizante,Bebida isotónica,Licor',
+limpieza:'Detergente,Lavandina,Limpiador de pisos,Esponja,Bolsas de residuos,Jabón en polvo,Suavizante,Papel de cocina,Trapo de piso,Lavandina en gel,Limpiavidrios,Desengrasante,Limpiador multiuso,Lustramuebles,Desodorante de ambiente,Insecticida,Jabón líquido para ropa,Jabón en barra,Detergente para lavavajillas,Pastillas lavavajillas,Esponja de acero,Rejilla,Guantes de limpieza,Escoba,Secador de piso,Palo de piso,Pala,Bolsas de residuos chicas,Servilletas,Film transparente,Papel aluminio,Papel manteca,Bolsas hermeticas,Fósforos,Velas,Pilas,Lamparitas,Desinfectante,Quitamanchas,Perfumina,Sahumerio',
+perfumeria:'Shampoo,Acondicionador,Jabón de tocador,Pasta dental,Cepillo de dientes,Papel higiénico,Desodorante,Algodón,Jabón líquido de manos,Gel de ducha,Crema de enjuague,Enjuague bucal,Hilo dental,Máquina de afeitar,Espuma de afeitar,Toallitas femeninas,Tampones,Protectores diarios,Pañales,Toallitas húmedas,Cotonetes,Protector solar,Crema corporal,Crema facial,Repelente,Alcohol en gel,Alcohol,Curitas,Agua oxigenada,Gasas,Perfume,Desodorante en barra,Talco,Gel para el pelo,Tintura,Esmalte,Quitaesmalte,Preservativos',
+congelados:'Helado,Hamburguesas congeladas,Papas fritas congeladas,Verdura congelada,Espinaca congelada,Empanadas congeladas,Pizza congelada,Patitas de pollo,Nuggets,Bastones de merluza,Arvejas congeladas,Choclo congelado,Pasta rellena congelada,Postre helado,Frutas congeladas',
+mascotas:'Alimento para perros,Alimento para gatos,Alimento para cachorros,Alimento para gatitos,Piedras sanitarias,Snacks para mascotas,Shampoo para mascotas,Antipulgas',
+sintacc:'Pan lactal sin TACC,Pan de hamburguesa sin TACC,Pan de pancho sin TACC,Pan de molde sin TACC,Pan rallado sin TACC,Prepizza sin TACC,Masa de pizza sin TACC,Tapas de empanadas sin TACC,Tapas de tarta sin TACC,Tapas de pascualina sin TACC,Medialunas sin TACC,Facturas sin TACC,Bizcochuelo sin TACC,Budín sin TACC,Tostadas sin TACC,Grisines sin TACC,Fideos spaghetti sin TACC,Fideos tirabuzón sin TACC,Fideos moñito sin TACC,Fideos codito sin TACC,Fideos tallarín sin TACC,Ravioles sin TACC,Ñoquis sin TACC,Sopa instantánea sin TACC,Harina sin TACC,Premezcla universal sin TACC,Premezcla para pan sin TACC,Premezcla para pizza sin TACC,Premezcla para tortas sin TACC,Premezcla para panqueques sin TACC,Rebozador sin TACC,Maicena sin TACC,Polvo de hornear sin TACC,Levadura sin TACC,Fécula de mandioca,Harina de arroz,Harina de maíz,Harina de garbanzo,Harina de almendras,Harina de coco,Quinoa,Amaranto,Mijo,Semillas de lino,Galletitas dulces sin TACC,Galletitas saladas sin TACC,Galletitas de agua sin TACC,Galletitas rellenas sin TACC,Galletitas de arroz,Alfajores sin TACC,Barras de cereal sin TACC,Cereales sin TACC,Avena sin TACC,Granola sin TACC,Chocolate sin TACC,Snacks sin TACC,Papas fritas sin TACC,Mayonesa sin TACC,Mostaza sin TACC,Ketchup sin TACC,Salsa de soja sin TACC,Caldo en cubos sin TACC,Dulce de leche sin TACC,Mermelada sin TACC,Gelatina sin TACC,Flan sin TACC,Postre en polvo sin TACC,Cacao en polvo sin TACC,Hamburguesas sin TACC,Salchichas sin TACC,Milanesas sin TACC,Nuggets sin TACC,Empanadas sin TACC,Pizza sin TACC,Panqueques sin TACC,Cerveza sin TACC',
+educacion:'Cuaderno tapa dura,Cuaderno rayado,Cuaderno cuadriculado,Cuaderno espiralado,Cuaderno A4,Cuaderno de comunicaciones,Carpeta N°3,Carpeta N°5,Carpeta A4,Repuesto rayado,Repuesto cuadriculado,Hojas A4,Hojas oficio,Hojas de color,Hojas canson,Block de dibujo N°5,Block de hojas,Folios,Separadores,Mapas escolares,Lápiz negro,Lápices de colores,Marcadores,Fibras,Fibrones,Resaltadores,Lapicera azul,Lapicera negra,Lapicera roja,Portaminas,Goma de borrar,Sacapuntas,Regla,Escuadra,Transportador,Compás,Tijera,Plasticola,Adhesivo en barra,Cinta adhesiva,Corrector,Témperas,Pinceles,Acuarelas,Plastilina,Masa para modelar,Papel afiche,Papel glacé,Papel crepé,Cartulina,Cartuchera,Mochila,Calculadora,Diccionario,Libros de texto,Forros para cuadernos,Etiquetas,Botella reutilizable,Lonchera,Bolso de educación física,Guardapolvo blanco,Guardapolvo cuadrillé,Chomba del uniforme,Remera del uniforme,Remera de educación física,Camisa del uniforme,Corbata,Pullover del uniforme,Buzo del colegio,Campera del uniforme,Pantalón del uniforme,Pantalón de jogging,Pollera del uniforme,Pollera pantalón,Bermuda del uniforme,Short de educación física,Calzas,Medias blancas,Medias del uniforme,Zapatos escolares,Zapatillas blancas,Zapatillas deportivas,Piloto de lluvia,Gorra,Traje de baño,Gorra de natación'};
+const CATALOG=Object.entries(SEED).flatMap(([c,s])=>s.split(',').map(n=>({id:c+':'+n.toLowerCase().replace(/\s+/g,'-'),n,c})));
+const UNITS=['u','kg','g','L','pack'];
+const DEFAULT_LISTS=[{id:'super',n:'Súper semanal',i:'🛒'},{id:'verd',n:'Verdulería, carnicería y pescadería',i:'🥬'},{id:'limp',n:'Limpieza y perfumería',i:'🧹'},{id:'cole',n:'Vuelta al cole',i:'🎒'},{id:'evento',n:'Reunión o cumpleaños',i:'🎉'},{id:'mensual',n:'Compra mensual grande',i:'📦'},{id:'sintacc',n:'Sin TACC',i:'🌾'}];
+let ACTIVE='super';try{ACTIVE=localStorage.getItem('lc_active')||'super'}catch(e){}
+const setActive=id=>{ACTIVE=id;try{localStorage.setItem('lc_active',id)}catch(e){}};
+
+/* ===== SERVICE: persistencia compartida (db) con respaldo local ===== */
+const GH={
+ cfg:(()=>{try{return JSON.parse(localStorage.getItem('lc_gh'))||{}}catch(e){return{}}})(),
+ set(c){this.cfg=c;try{localStorage.setItem('lc_gh',JSON.stringify(c))}catch(e){}},
+ ok(){const c=this.cfg;return!!(c.token&&c.owner&&c.repo)},
+ base(){const c=this.cfg;return`https://api.github.com/repos/${encodeURIComponent(c.owner)}/${encodeURIComponent(c.repo)}`},
+ url(){return this.base()+'/contents/'+(this.cfg.path||'lista-compras.json').split('/').map(encodeURIComponent).join('/')},
+ hdr(){return{Authorization:'Bearer '+this.cfg.token,Accept:'application/vnd.github+json'}},
+ async get(){const r=await fetch(this.url()+'?t='+Date.now(),{headers:this.hdr()});
+  if(!r.ok)return{status:r.status};
+  const j=await r.json();return{status:200,sha:j.sha,data:JSON.parse(decodeURIComponent(escape(atob((j.content||'').replace(/\n/g,'')))))}},
+ async put(data,sha){const body={message:'sync '+new Date().toISOString(),content:btoa(unescape(encodeURIComponent(JSON.stringify(data))))};if(sha)body.sha=sha;
+  const r=await fetch(this.url(),{method:'PUT',headers:{...this.hdr(),'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok)return{status:r.status};const j=await r.json();return{status:r.status,sha:j.content.sha}},
+ async test(){try{const r=await fetch(this.base(),{headers:this.hdr()});
+  if(r.status===401)return{ok:false,msg:'El token no es válido o venció'};
+  if(r.status===404)return{ok:false,msg:'No encuentro ese repositorio, o el token no tiene acceso a él'};
+  if(!r.ok)return{ok:false,msg:'GitHub respondió con error '+r.status};
+  const j=await r.json();if(j.permissions&&j.permissions.push===false)return{ok:false,msg:'El token solo puede leer: necesita permiso de escritura en Contents'};
+  return{ok:true}}catch(e){return{ok:false,msg:'No pude conectarme: revisá tu conexión'}}}
+};
+const Store=(()=>{
+ let state={list:[],lists:DEFAULT_LISTS.map(x=>({...x})),favs:[],prices:{},custom:[],last:{},hist:{},ts:0},listeners=[],pending=[],timer=null,busy=false,again=false,sha=null,remoteTs=-1,poll=null;
+ const norm=d=>{const c=JSON.parse(JSON.stringify(d||{}));const r={list:c.list||[],lists:c.lists&&c.lists.length?c.lists:DEFAULT_LISTS.map(x=>({...x})),favs:c.favs||[],prices:c.prices||{},custom:c.custom||[],last:c.last||{},hist:c.hist||{},ts:c.ts||0};r.list.forEach(i=>{if(!i.l)i.l=r.lists[0].id});for(const k in r.last)if(!r.hist[k])r.hist[k]=[r.last[k]];for(const k in r.hist)if(!r.last[k]&&r.hist[k].length)r.last[k]=r.hist[k][r.hist[k].length-1];return r};
+ state=norm(null);
+ const emit=()=>listeners.forEach(f=>f(state));
+ const cache=()=>{try{localStorage.setItem('lc',JSON.stringify(state))}catch(e){}};
+ const load=()=>{try{const v=localStorage.getItem('lc');if(v)state=norm(JSON.parse(v))}catch(e){}};
+ /* reaplica los cambios locales todavía no enviados sobre lo último que hay en GitHub */
+ const replay=()=>pending.forEach(p=>{const a=ACTIVE;ACTIVE=p.active;try{p.fn(state)}catch(e){}ACTIVE=a});
+ const mergeInto=(s,d)=>{(d.lists||[]).forEach(l=>{if(!s.lists.find(x=>x.id===l.id))s.lists.push(l)});
+  (d.custom||[]).forEach(c=>{if(!s.custom.find(x=>x.id===c.id))s.custom.push(c)});
+  (d.list||[]).forEach(i=>{if(!s.list.find(x=>x.id===i.id&&x.l===i.l))s.list.push(i)});
+  (d.favs||[]).forEach(f=>{if(!s.favs.includes(f))s.favs.push(f)});
+  for(const k in d.prices||{})if(s.prices[k]==null)s.prices[k]=d.prices[k];
+  for(const k in d.last||{})s.last[k]=Math.max(s.last[k]||0,d.last[k]);
+  for(const k in d.hist||{})s.hist[k]=[...new Set([...(s.hist[k]||[]),...d.hist[k]])].sort((a,b)=>a-b).slice(-10)};
+ const stamp=()=>{try{localStorage.setItem('lc_gh_synced','1')}catch(e){}setSync('Sincronizado ✓ '+new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}),'ok')};
+ const fail=e=>{const c=e&&e.status;
+  if(c===401)setSync('Token inválido o vencido: renovalo en Más ⚙️','warn');
+  else if(c===403)setSync('GitHub rechazó el acceso (permisos o límite de uso)','warn');
+  else if(c===404)setSync('No se encuentra el repositorio, o el token no tiene acceso','warn');
+  else if(c)setSync('Error de sincronización ('+c+'). Se reintenta solo','warn');
+  else setSync('Sin conexión: tus cambios quedan en este celular y se envían al volver','warn')};
+ async function sync(){
+  if(!GH.ok()){setSync('Solo en este celular · configurá la sincronización en Más ⚙️','warn');return}
+  if(busy){again=true;return}
+  busy=true;
+  try{
+   for(let t=0;t<4;t++){
+    const r=await GH.get();let create=false,changed=false;
+    if(r.status===200){sha=r.sha;const rem=norm(r.data);if(rem.ts!==remoteTs){state=rem;remoteTs=rem.ts;replay();changed=true}}
+    else if(r.status===404){const tt=await GH.test();if(tt.ok){sha=null;create=true}else throw{status:404}}
+    else throw{status:r.status};
+    if(changed){cache();emit()}
+    if(!pending.length&&!create){stamp();break}
+    const n=pending.length;state.ts=Date.now();
+    const w=await GH.put(state,sha);
+    if(w.status===200||w.status===201){sha=w.sha;remoteTs=state.ts;pending=pending.slice(n);cache();if(pending.length)continue;stamp();break}
+    if(w.status===409||w.status===422)continue; /* alguien guardó antes: se vuelve a leer y reaplicar */
+    throw{status:w.status};
+   }
+  }catch(e){fail(e)}
+  finally{busy=false;if(again){again=false;setTimeout(sync,300)}}
+ }
+ const startPoll=()=>{clearInterval(poll);poll=setInterval(()=>{if(!document.hidden)sync()},15000)};
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&GH.ok())sync()});
+ window.addEventListener('online',()=>{if(GH.ok())sync()});
+ return{
+  get:()=>state,on:f=>listeners.push(f),sync,
+  init(){load();emit();if(GH.ok()){sync();startPoll()}else setSync('Solo en este celular · configurá la sincronización en Más ⚙️','warn')},
+  mutate(fn){fn(state);state.ts=Date.now();cache();emit();if(GH.ok()){pending.push({fn,active:ACTIVE});clearTimeout(timer);timer=setTimeout(sync,800)}},
+  async connect(cfg){GH.set({...cfg,path:cfg.path||'lista-compras.json'});try{localStorage.removeItem('lc_gh_synced')}catch(e){}
+   const t=await GH.test();if(!t.ok){GH.set({});return t.msg}
+   const loc=JSON.parse(JSON.stringify(state));pending=[{fn:s=>mergeInto(s,loc),active:ACTIVE}];remoteTs=-1;sha=null;
+   startPoll();await sync();return null},
+  disconnect(){clearInterval(poll);GH.set({});pending=[];setSync('Solo en este celular · configurá la sincronización en Más ⚙️','warn')}};
+})();
+function setSync(t,k){const e=document.getElementById('sync');e.textContent=t;e.className='sub '+(k||'')}
+
+/* ===== LOGIC ===== */
+const Shop={
+ all:()=>[...CATALOG,...Store.get().custom],
+ byId:id=>Shop.all().find(p=>p.id===id),
+ inList:(id,l)=>Store.get().list.find(i=>i.id===id&&i.l===(l||ACTIVE)),
+ cur:()=>Store.get().list.filter(i=>i.l===ACTIVE),
+ curList:()=>Store.get().lists.find(l=>l.id===ACTIVE)||Store.get().lists[0],
+ add:(id)=>Store.mutate(s=>{if(!s.list.find(i=>i.id===id&&i.l===ACTIVE))s.list.push({id,q:1,u:'u',l:ACTIVE})}),
+ remove:id=>Store.mutate(s=>{s.list=s.list.filter(i=>!(i.id===id&&i.l===ACTIVE))}),
+ fav:id=>Store.mutate(s=>{s.favs=s.favs.includes(id)?s.favs.filter(f=>f!==id):[...s.favs,id]}),
+ stepQ(id,dir){const i=Shop.inList(id);if(!i)return;const st={kg:.5,L:.5,g:100}[i.u]||1,nq=Math.round((i.q+dir*st)*100)/100;if(nq>=st)Shop.set(id,'q',nq)},
+ set:(id,k,v)=>Store.mutate(s=>{const i=s.list.find(x=>x.id===id&&x.l===ACTIVE);if(i)i[k]=v}),
+ addMany:es=>Store.mutate(s=>{es.forEach(e=>{let id=e.id;if(!id){id='x:'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);s.custom.push({id,n:e.name,c:e.cat})}
+   if(!s.list.find(i=>i.id===id&&i.l===ACTIVE))s.list.push({id,q:e.q||1,u:e.u||'u',l:ACTIVE})})}),
+ exportData(kind){const s=Store.get();let d;
+  if(kind==='list'){const cur=Shop.cur(),ids=new Set(cur.map(i=>i.id));d={v:1,kind:'list',list:cur.map(({id,q,u})=>({id,q,u})),custom:s.custom.filter(c=>ids.has(c.id)),prices:Object.fromEntries(Object.entries(s.prices).filter(([k])=>ids.has(k)))}}
+  else d={v:1,kind:'all',lists:s.lists,list:s.list,favs:s.favs,prices:s.prices,custom:s.custom,last:s.last,hist:s.hist};
+  return 'LC1:'+btoa(unescape(encodeURIComponent(JSON.stringify(d))))},
+ importData(text,replace){const m=(text||'').match(/LC1:[A-Za-z0-9+\/=]+/);if(!m)return'No encontré un código válido';
+  let d;try{d=JSON.parse(decodeURIComponent(escape(atob(m[0].slice(4)))))}catch(e){return'El código está incompleto o dañado'}
+  if(!d||d.v!==1)return'Código de otra versión';
+  Store.mutate(s=>{const map={};
+   (d.custom||[]).forEach(c=>{const ex=s.custom.find(x=>x.id===c.id)||s.custom.find(x=>x.c===c.c&&Shop.nm(x.n)===Shop.nm(c.n));if(ex)map[c.id]=ex.id;else s.custom.push(c)});
+   const r=id=>map[id]||id;
+   const lm={};if(d.kind==='all')(d.lists||[]).forEach(l=>{const ex=s.lists.find(x=>x.id===l.id)||s.lists.find(x=>Shop.nm(x.n)===Shop.nm(l.n));if(ex)lm[l.id]=ex.id;else{s.lists.push({...l});lm[l.id]=l.id}});
+   if(replace){s.list=d.kind==='all'?[]:s.list.filter(i=>i.l!==ACTIVE);if(d.kind==='all'){s.favs=[];s.prices={};s.last={};s.hist={}}}
+   (d.list||[]).forEach(i=>{const id=r(i.id),L=d.kind==='all'?(lm[i.l]||s.lists[0].id):ACTIVE;if(!s.list.find(x=>x.id===id&&x.l===L))s.list.push({...i,id,l:L})});
+   for(const k in d.prices||{}){const id=r(k);if(replace||s.prices[id]==null)s.prices[id]=d.prices[k]}
+   if(d.kind==='all'){(d.favs||[]).map(r).forEach(f=>{if(!s.favs.includes(f))s.favs.push(f)});
+    for(const k in d.last||{}){const id=r(k);s.last[id]=Math.max(s.last[id]||0,d.last[k])}
+    for(const k in d.hist||{}){const id=r(k);s.hist[id]=[...new Set([...(s.hist[id]||[]),...d.hist[k]])].sort((a,b)=>a-b).slice(-10)}}});
+  return null},
+ move(id,to){Store.mutate(s=>{const it=s.list.find(i=>i.id===id&&i.l===ACTIVE);if(!it)return;if(s.list.find(i=>i.id===id&&i.l===to))s.list=s.list.filter(i=>i!==it);else it.l=to})},
+ addList(n,i){const id='l'+Date.now().toString(36);Store.mutate(s=>{s.lists.push({id,n,i:i||'📝'})});return id},
+ renameList:(id,n)=>Store.mutate(s=>{const l=s.lists.find(x=>x.id===id);if(l&&n.trim())l.n=n.trim()}),
+ iconList:(id,i)=>Store.mutate(s=>{const l=s.lists.find(x=>x.id===id);if(l&&i.trim())l.i=i.trim()}),
+ delList:id=>Store.mutate(s=>{if(s.lists.length<2)return;s.lists=s.lists.filter(l=>l.id!==id);s.list=s.list.filter(i=>i.l!==id)}),
+ nm:t=>t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(),
+ match(t){const n=Shop.nm(t),sc=[];if(n.length<2)return[];
+  for(const p of Shop.all()){const x=Shop.nm(p.n);let v=0;
+   if(x===n)v=100;else if(x===n+'s'||x===n+'es'||x+'s'===n||x+'es'===n)v=95;
+   else if(x.startsWith(n+' '))v=90-(x.length-n.length)*.1;else if(x.startsWith(n))v=75-(x.length-n.length)*.1;
+   else if(x.split(' ').some(w=>w.startsWith(n)))v=60-(x.length-n.length)*.1;
+   if(!v){const tk=n.split(/\s+/),xw=x.split(' ');if(tk.length>1&&tk.every(t=>xw.some(w=>w.startsWith(t))))v=50-(x.length-n.length)*.1}
+   if(v>0&&p.c==='sintacc'&&!n.includes('tacc'))v-=20;
+   if(v>0)sc.push([v,p])}
+  return sc.sort((a,b)=>b[0]-a[0]).slice(0,5).map(a=>a[1])},
+ parse(text){return text.split(/[,;\n]+|\s+y\s+/i).map(x=>x.trim()).filter(Boolean).map(raw=>{
+   let q=1,u='u',t=raw,m;
+   if(m=raw.match(/^(\d+(?:[.,]\d+)?)\s*(?:(kg|g|lt|l|un|u|pack)\b)?\s*(.+)$/i)){q=parseFloat(m[1].replace(',','.'));u={lt:'L',l:'L',un:'u'}[(m[2]||'u').toLowerCase()]||(m[2]||'u').toLowerCase();t=m[3]}
+   else if(m=raw.match(/^(.+?)\s*x\s*(\d+)$/i)){t=m[1];q=+m[2]}
+   const c=Shop.match(t);return{term:t.charAt(0).toUpperCase()+t.slice(1),q,u,cands:c.map(p=>p.id),pick:c[0]?c[0].id:''}})},
+ bought:id=>Store.mutate(s=>{s.list=s.list.filter(i=>!(i.id===id&&i.l===ACTIVE));const now=Date.now(),h=s.hist[id]||[];if(!h.length||now-h[h.length-1]>432e5)h.push(now);s.hist[id]=h.slice(-10);s.last[id]=now}),
+ suggest(){const s=Store.get(),now=Date.now(),D=864e5,out=[];
+  for(const[id,h]of Object.entries(s.hist)){if(h.length<2||Shop.inList(id))continue;const p=Shop.byId(id);if(!p)continue;
+   let sum=0;for(let i=1;i<h.length;i++)sum+=h[i]-h[i-1];
+   const avg=sum/(h.length-1)/D,since=(now-h[h.length-1])/D;if(avg<2)continue;
+   const r=since/avg;if(r>=0.85)out.push({p,avg:Math.round(avg),since:Math.floor(since),r})}
+  return out.sort((a,b)=>b.r-a.r).slice(0,6)},
+ price:(id,v)=>Store.mutate(s=>{s.prices[id]=v}),
+ newProduct:(n,c)=>{const id='x:'+Date.now().toString(36);Store.mutate(s=>{s.custom.push({id,n,c})});return id},
+ total:()=>Shop.cur().reduce((a,i)=>a+(Store.get().prices[i.id]||0)*i.q,0),
+ wa(){const s=Store.get();const by={};Shop.cur().forEach(i=>{const p=Shop.byId(i.id);if(p)(by[p.c]=by[p.c]||[]).push(`• ${p.n} – ${i.q} ${i.u}`)});
+  const t=Shop.curList().i+' *'+Shop.curList().n+'*\n'+Object.entries(by).map(([c,l])=>`\n${CATS[c][0]} *${CATS[c][1]}*\n${l.join('\n')}`).join('\n');
+  return 'https://wa.me/?text='+encodeURIComponent(t)}
+};
+
+/* ===== UI ===== */
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ago=t=>{const d=Math.round((new Date().setHours(0,0,0,0)-new Date(t).setHours(0,0,0,0))/864e5);
+ return d<=0?'Comprado hoy':d===1?'Comprado ayer':d<7?`Comprado hace ${d} días`:d<30?`Comprado hace ${Math.floor(d/7)} sem.`:'Comprado el '+new Date(t).toLocaleDateString('es-AR')};
+const money=n=>'$'+Math.round(n).toLocaleString('es-AR');
+let tab='lista',q='',bulk=null,mas={code:'',imp:'',conf:false,del:''};
+async function copyText(t){try{await navigator.clipboard.writeText(t);return true}catch(e){const el=document.getElementById('exp');if(el){el.select();try{return document.execCommand('copy')}catch(e2){}}return false}}
+let OPEN=new Set();try{OPEN=new Set(JSON.parse(localStorage.getItem('lc_open')||'[]'))}catch(e){}
+const saveOpen=()=>{try{localStorage.setItem('lc_open',JSON.stringify([...OPEN]))}catch(e){}};
+const TABS=[['lista','📝','Lista'],['catalogo','📚','Catálogo'],['favs','⭐','Favoritos'],['mas','⚙️','Más']];
+function toast(t,undo){const e=document.getElementById('toast');e.innerHTML=esc(t)+(undo?' · <u id="undo">Deshacer</u>':'');e.style.display='block';if(undo)document.getElementById('undo').onclick=()=>{undo();e.style.display='none'};clearTimeout(e.t);e.t=setTimeout(()=>e.style.display='none',3500)}
+function grouped(items){const g={};items.forEach(p=>(g[p.c]=g[p.c]||[]).push(p));return Object.keys(CATS).filter(c=>g[c]).map(c=>[c,g[c]])}
+
+const View={
+ chips(){const s=Store.get();return '<div class="chips">'+s.lists.map(l=>{const n=s.list.filter(i=>i.l===l.id).length;return `<button class="chip${l.id===ACTIVE?' on':''}" data-list="${esc(l.id)}">${esc(l.i)} ${esc(l.n)}${n?`<b>${n}</b>`:''}</button>`}).join('')+'<button class="chip" data-tab="mas">＋ Listas</button></div>'},
+ listMgr(s){return '<div class="cat">📋 Mis listas</div><div style="margin:0 16px">'+s.lists.map(l=>`<div class="row" style="margin:6px 0"><input data-li="${esc(l.id)}" value="${esc(l.i)}" maxlength="4" aria-label="Ícono" style="width:58px;text-align:center;padding:8px"><input data-ln="${esc(l.id)}" value="${esc(l.n)}" aria-label="Nombre" style="flex:1;min-width:0;padding:8px"><button class="ico" data-ld="${esc(l.id)}" aria-label="Borrar lista">${mas.del===l.id?'❓':'🗑️'}</button></div>`).join('')+`<div class="row" style="margin:6px 0"><input id="nl-i" value="📝" maxlength="4" aria-label="Ícono" style="width:58px;text-align:center;padding:8px"><input id="nl-n" placeholder="Nueva lista…" style="flex:1;min-width:0;padding:8px"><button class="add on" id="ls-new">Crear</button></div><div class="sub">Cambiá el nombre o el ícono y se guarda solo. Al borrar una lista se borran también sus productos.</div></div>`},
+ ghPanel(){const c=GH.cfg,on=GH.ok();return `<div class="cat">☁️ Sincronización con GitHub</div><div style="margin:0 16px"><div class="sub" style="margin-bottom:8px">${on?'Conectado a <b>'+esc(c.owner)+'/'+esc(c.repo)+'</b>':'Sin configurar: tus datos quedan solo en este celular.'}</div><input id="gh-o" class="ta" placeholder="Usuario de GitHub (dueño del repositorio)" value="${esc(c.owner||'')}" autocapitalize="off" autocomplete="off" style="margin-bottom:6px"><input id="gh-r" class="ta" placeholder="Repositorio privado, ej: lista-compras-datos" value="${esc(c.repo||'')}" autocapitalize="off" autocomplete="off" style="margin-bottom:6px"><input id="gh-t" type="password" class="ta" placeholder="${on?'Token guardado (vacío = conservarlo)':'Token de acceso (github_pat_…)'}" autocomplete="off"><div class="tools" style="margin:8px 0"><button class="add on" id="gh-save" style="flex:1;padding:12px">Guardar y probar</button>${on?'<button class="add" id="gh-off" style="padding:12px">Desconectar</button>':''}</div><div class="sub">El token se guarda solo en este celular. Usá uno limitado a ese repositorio, con permiso de Contents lectura y escritura, y con fecha de vencimiento.</div></div>`},
+ mas(){const lm=View.listMgr(Store.get()),m=mas,long=m.code.length>=1800,wa=m.code?'https://wa.me/?text='+encodeURIComponent('📦 Mi lista de compras. Pegá este código en la app (Más → Importar):\n'+m.code):'';
+  return lm+View.ghPanel()+`<div class="cat">📤 Exportar</div><div style="margin:0 16px"><div class="sub">Generá un código y mandáselo a la otra persona (WhatsApp, mail, Drive…).</div><div class="tools" style="margin:8px 0"><button class="add" id="ex-list" style="flex:1;padding:12px">Solo la lista</button><button class="add" id="ex-all" style="flex:1;padding:12px">Todo</button></div>`
+  +(m.code?`<textarea id="exp" class="ta" readonly rows="4">${esc(m.code)}</textarea><div class="tools" style="margin:8px 0"><button class="add on" id="ex-copy" style="flex:1;padding:12px">Copiar código</button>${long?'':`<a href="${wa}" target="_blank" rel="noopener" style="flex:1;display:flex"><button class="add" style="flex:1;padding:12px">WhatsApp</button></a>`}</div>${long?'<div class="sub">El código es largo: copialo y pegalo en el chat.</div>':''}`:'')
+  +`</div><div class="cat">📥 Importar</div><div style="margin:0 16px"><textarea id="imp" class="ta" rows="4" placeholder="Pegá acá el código recibido (aunque venga con texto alrededor)">${esc(m.imp)}</textarea><div class="tools" style="margin:8px 0"><button class="add on" id="im-merge" style="flex:1;padding:12px">Combinar con lo mío</button><button class="add" id="im-replace" style="flex:1;padding:12px">${m.conf?'¿Seguro? Tocá de nuevo':'Reemplazar'}</button></div><div class="sub">“Combinar” suma lo que falte sin borrar nada. “Reemplazar” vacía tu lista actual antes de cargar la recibida.</div></div>`},
+ bulk(){const b=bulk;
+  if(!b.rows)return `<div class="cat">✍️ Agregar varios</div><div style="margin:0 16px"><textarea id="bt" rows="6" placeholder="leche, pan, 2 kg tomate, huevos…" style="width:100%;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px">${esc(b.text)}</textarea><div class="sub" style="margin:6px 2px">Separá con comas o renglones. Podés dictar con el micrófono del teclado. Cantidades: “2 kg tomate” o “leche x3”.</div><div class="tools" style="margin:8px 0"><button class="add on" id="bk-review" style="flex:1;padding:12px">Revisar</button><button class="add" id="bk-cancel" style="padding:12px">Cancelar</button></div></div>`;
+  const opt=(r,i)=>r.cands.length?r.cands.map(id=>{const p=Shop.byId(id);return`<option value="${esc(id)}"${r.pick===id?' selected':''}>${esc(p.n)} · ${CATS[p.c][1]}</option>`}).join('')+`<option value="omit"${r.pick==='omit'?' selected':''}>Omitir</option>`
+   :`<option value=""${r.pick===''?' selected':''}>Elegir categoría…</option>`+Object.entries(CATS).map(([c,v])=>`<option value="new:${c}"${r.pick==='new:'+c?' selected':''}>Crear en ${v[1]}</option>`).join('')+`<option value="omit"${r.pick==='omit'?' selected':''}>Omitir</option>`;
+  return `<div class="cat">Revisá antes de agregar</div>`+b.rows.map((r,i)=>`<div class="row"><div class="n">${esc(r.term)}<span>${r.q} ${r.u}${r.cands.length?'':' · no está en el catálogo'}</span></div><select data-br="${i}" style="width:58%;padding:8px;border-radius:10px">${opt(r,i)}</select></div>`).join('')+`<div class="tools" style="margin:12px 16px"><button class="add on" id="bk-ok" style="flex:1;padding:12px">Agregar a la lista</button><button class="add" id="bk-back" style="padding:12px">Volver</button></div>`},
+ sug(){const l=Shop.suggest();return l.length?'<div class="cat">💡 Quizás te falta</div>'+l.map(x=>`<div class="row"><div class="n">${esc(x.p.n)}<span>Comprás cada ~${x.avg} días · última hace ${x.since} d</span></div><button class="add" data-add="${esc(x.p.id)}">+ Agregar</button></div>`).join(''):''},
+ lista(){const s=Store.get();const items=Shop.cur().map(i=>({...Shop.byId(i.id),...i,pid:i.id})).filter(p=>p.n);
+  const hero=`<div class="hero"><div><small>${esc(Shop.curList().i+' '+Shop.curList().n)} · ${items.length} pendientes</small><b>${money(Shop.total())}</b><small>total estimado</small></div>${items.length?`<a href="${Shop.wa()}" target="_blank" rel="noopener"><button class="wa">Enviar 💬</button></a>`:''}</div>`;
+  const sg=View.sug(),bkb='<div class="tools" style="margin:8px 16px"><button class="add" id="bk-open" style="width:100%;padding:12px">✍️ Agregar varios a la vez</button></div>';if(!items.length)return hero+bkb+sg+'<div class="empty">Tu lista está vacía 🎉<br>Sumá productos desde el Catálogo o tus Favoritos.</div>';
+  return hero+bkb+sg+grouped(items).map(([c,l])=>`<div class="cat">${CATS[c][0]} ${CATS[c][1]}</div>`+l.map(p=>`<div class="row lst"><button class="chk" data-buy="${esc(p.pid)}">✓</button><div class="n">${esc(p.n)}<span>${s.prices[p.pid]?money(s.prices[p.pid]*p.q):'sin precio'}${s.last[p.pid]?' · '+ago(s.last[p.pid]):' · nunca comprado'}</span></div><input class="mini" type="number" inputmode="decimal" placeholder="$" value="${s.prices[p.pid]||''}" data-p="${esc(p.pid)}"><div class="step"><button class="sb" data-dec="${esc(p.pid)}" aria-label="Menos">−</button><input class="mini" type="number" inputmode="decimal" min="0" step="any" value="${p.q}" data-q="${esc(p.pid)}"><button class="sb" data-inc="${esc(p.pid)}" aria-label="Más">+</button><select class="u" data-u="${esc(p.pid)}">${UNITS.map(u=>`<option${u===p.u?' selected':''}>${u}</option>`).join('')}</select><button class="ico del" data-del="${esc(p.pid)}" aria-label="Quitar de la lista">🗑️</button><select class="mv" data-mv="${esc(p.pid)}" aria-label="Mover a otra lista"><option value="">➡️</option>${s.lists.filter(l=>l.id!==ACTIVE).map(l=>`<option value="${esc(l.id)}">${esc(l.i+' '+l.n)}</option>`).join('')}</select></div></div>`).join('')).join('')},
+ catalogo(){const f=q.trim().toLowerCase();const items=Shop.all().filter(p=>!f||p.n.toLowerCase().includes(f)||(p.c==='sintacc'&&/gluten|celiac|celíac|tacc/.test(f))||(p.c==='educacion'&&/escuel|colegi|uniform|util|útil|cole\b/.test(f)));
+  let h=`<div class="search"><input id="q" placeholder="Buscar o crear producto…" value="${esc(q)}"></div>`;
+  if(f&&!items.some(p=>p.n.toLowerCase()===f))h+=`<div class="row"><div class="n">➕ Crear “${esc(q.trim())}”</div><select class="u" style="width:120px" id="newc">${Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v[1]}</option>`).join('')}</select><button class="add" id="mk">Crear</button></div>`;
+  return h+'<div class="tools"><button class="add" id="expall">Expandir todo</button><button class="add" id="colall">Compactar todo</button></div>'+View.rows(items,true,!!f)},
+ favs(){const s=Store.get();const items=s.favs.map(Shop.byId).filter(Boolean);
+  return `<div class="hero" style="background:linear-gradient(135deg,#d99a1e,#a8641a)"><div><b>${items.length}</b><small>habituales</small></div>${items.length?'<button class="wa" id="addall" style="background:#fff;color:#7a4a10">Agregar todos</button>':''}</div>`+(items.length?View.rows(items):'<div class="empty">Marcá ⭐ en el Catálogo los productos que comprás seguido.</div>')},
+ rows(items,coll,searching){const s=Store.get();return grouped(items).map(([c,l])=>{const show=!coll||searching||OPEN.has(c);return (coll?`<button class="cat cathead${show?' open':''}" data-cat="${c}"><span>${CATS[c][0]}</span>${CATS[c][1]}<span class="cnt">${l.length}</span><span class="chev">▾</span></button>`:`<div class="cat">${CATS[c][0]} ${CATS[c][1]}</div>`)+(show?l.map(p=>`<div class="row"><button class="ico" data-fav="${esc(p.id)}">${s.favs.includes(p.id)?'⭐':'☆'}</button><div class="n">${esc(p.n)}${s.last[p.id]?`<span>🛍️ ${ago(s.last[p.id])}</span>`:''}</div><button class="add${Shop.inList(p.id)?' on':''}" data-add="${esc(p.id)}">${Shop.inList(p.id)?'En lista ✓':'+ Agregar'}</button></div>`).join(''):'')}).join('')}
+};
+
+function fixActive(){const s=Store.get();if(!s.lists.find(l=>l.id===ACTIVE))setActive(s.lists[0].id)}
+function render(){fixActive();
+ const keep=document.activeElement?.id==='q';
+ document.getElementById('app').innerHTML='<header style="padding:0"></header>'+(tab!=='mas'?View.chips():'')+(tab==='lista'&&bulk?View.bulk():View[tab]());
+ document.getElementById('nav').innerHTML=TABS.map(([k,i,l])=>`<button class="${k===tab?'on':''}" data-tab="${k}"><i>${i}</i>${l}</button>`).join('');
+ document.querySelector('.chip.on')?.scrollIntoView?.({inline:'center',block:'nearest'});
+ if(keep){const e=document.getElementById('q');e.focus();e.setSelectionRange(q.length,q.length)}
+}
+/* ===== EVENTS (delegación) ===== */
+window.addEventListener('error',e=>setSync('Error: '+e.message));
+document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset;try{
+ if(d.tab){tab=d.tab;render();scrollTo(0,0)}
+ else if(d.buy){const it=Shop.inList(d.buy),prev=Store.get().last[d.buy],ph=(Store.get().hist[d.buy]||[]).slice();Shop.bought(d.buy);toast('Comprado ✓',()=>Store.mutate(s=>{s.list.push(it);prev?s.last[d.buy]=prev:delete s.last[d.buy];ph.length?s.hist[d.buy]=ph:delete s.hist[d.buy]}))}
+ else if(d.add){Shop.inList(d.add)?Shop.remove(d.add):Shop.add(d.add)}
+ else if(d.list){setActive(d.list);render();scrollTo(0,0)}
+ else if(t.id==='ls-new'){const n=document.getElementById('nl-n').value.trim(),ic=document.getElementById('nl-i').value.trim()||'📝';if(!n)toast('Escribí un nombre para la lista');else{const id=Shop.addList(n,ic);setActive(id);toast('Lista creada ✓')}}
+ else if(d.ld){const l=Store.get().lists.find(x=>x.id===d.ld),n=Store.get().list.filter(i=>i.l===d.ld).length;
+  if(Store.get().lists.length<2)toast('Tiene que quedar al menos una lista');
+  else if(mas.del!==d.ld){mas.del=d.ld;render();toast(`“${l.n}” se borra con ${n} producto${n===1?'':'s'}. Tocá ❓ para confirmar`)}
+  else{mas.del='';Shop.delList(d.ld);toast('Lista borrada')}}
+ else if(t.id==='gh-save'){const v=id=>document.getElementById(id).value.trim(),tok=v('gh-t')||GH.cfg.token||'';
+  if(!v('gh-o')||!v('gh-r')||!tok)toast('Completá usuario, repositorio y token');
+  else{toast('Probando conexión…');Store.connect({owner:v('gh-o'),repo:v('gh-r'),token:tok}).then(err=>{toast(err||'Conectado y sincronizado ✓');render()})}}
+ else if(t.id==='gh-off'){Store.disconnect();render();toast('Desconectado: los datos siguen en este celular')}
+ else if(t.id==='ex-list'||t.id==='ex-all'){mas.code=Shop.exportData(t.id==='ex-all'?'all':'list');mas.conf=false;render()}
+ else if(t.id==='ex-copy'){copyText(mas.code).then(ok=>toast(ok?'Código copiado ✓':'Mantené apretado el texto y copialo'))}
+ else if(t.id==='im-merge'||t.id==='im-replace'){const rp=t.id==='im-replace';
+  if(rp&&!mas.conf){mas.conf=true;render();toast('Se vaciará tu lista actual. Tocá otra vez para confirmar')}
+  else{mas.conf=false;const err=Shop.importData(mas.imp,rp);if(err){render();toast(err)}else{mas.imp='';render();toast(rp?'Lista reemplazada ✓':'Importado y combinado ✓')}}}
+ else if(t.id==='bk-open'){bulk={text:'',rows:null};render()}
+ else if(t.id==='bk-cancel'){bulk=null;render()}
+ else if(t.id==='bk-back'){bulk.rows=null;render()}
+ else if(t.id==='bk-review'){const r=Shop.parse(bulk.text);if(!r.length)toast('Escribí al menos un producto');else{bulk.rows=r;render();scrollTo(0,0)}}
+ else if(t.id==='bk-ok'){const es=bulk.rows.filter(r=>r.pick&&r.pick!=='omit').map(r=>r.pick.startsWith('new:')?{name:r.term,cat:r.pick.slice(4),q:r.q,u:r.u}:{id:r.pick,q:r.q,u:r.u});
+  const sin=bulk.rows.filter(r=>!r.pick).length;
+  if(sin){toast('Elegí una categoría u “Omitir” para los productos nuevos');}else{bulk=null;Shop.addMany(es);toast(es.length+' productos agregados')}}
+ else if(d.del){const it=Shop.inList(d.del);Shop.remove(d.del);toast('Quitado de la lista',()=>Store.mutate(s=>{if(!s.list.find(i=>i.id===it.id))s.list.push(it)}))}
+ else if(d.inc)Shop.stepQ(d.inc,1)
+ else if(d.dec)Shop.stepQ(d.dec,-1)
+ else if(d.cat){OPEN.has(d.cat)?OPEN.delete(d.cat):OPEN.add(d.cat);saveOpen();render()}
+ else if(t.id==='expall'){Object.keys(CATS).forEach(c=>OPEN.add(c));saveOpen();render()}
+ else if(t.id==='colall'){OPEN.clear();saveOpen();render()}
+ else if(d.fav)Shop.fav(d.fav);
+ else if(t.id==='mk'){const id=Shop.newProduct(q.trim(),document.getElementById('newc').value);Shop.add(id);q='';toast('Producto creado y agregado')}
+ else if(t.id==='addall'){Store.get().favs.forEach(Shop.add);toast('Favoritos agregados')}}catch(err){setSync('Error: '+err.message)}});
+document.addEventListener('change',e=>{const d=e.target.dataset,v=parseFloat(e.target.value)||0;
+ if(d.q)Shop.set(d.q,'q',v||1);else if(d.u)Shop.set(d.u,'u',e.target.value);else if(d.p)Shop.price(d.p,v);else if(d.br!==undefined)bulk.rows[+d.br].pick=e.target.value;else if(d.mv&&e.target.value){Shop.move(d.mv,e.target.value);toast('Movido ✓')}else if(d.ln)Shop.renameList(d.ln,e.target.value);else if(d.li)Shop.iconList(d.li,e.target.value)});
+document.addEventListener('input',e=>{if(e.target.id==='q'){q=e.target.value;render()}else if(e.target.id==='bt')bulk.text=e.target.value;else if(e.target.id==='imp')mas.imp=e.target.value});
+
+Store.on(()=>{if(!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName)||document.activeElement.id==='q')render()});
+render();Store.init();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script></body></html>
